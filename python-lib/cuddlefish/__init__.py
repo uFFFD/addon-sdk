@@ -612,7 +612,8 @@ def run(arguments=sys.argv[1:], target_cfg=None, pkg_cfg=None,
 
     # reparse configs with arguments from local.json
     if config_args:
-        parser_kwargs['arguments'] += config_args
+        # bug 1036270
+        parser_kwargs['arguments'] = config_args + parser_kwargs['arguments']
         (options, args) = parse_args(**parser_kwargs)
 
     command = args[0]
