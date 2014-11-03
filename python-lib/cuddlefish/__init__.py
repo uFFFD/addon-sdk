@@ -142,6 +142,12 @@ parser_groups = (
                                     default=False,
                                     cmds=['run', 'test', 'testex', 'testpkgs',
                                           'testaddons', 'testall'])),
+        (("", "--user-prefs",), dict(dest="user_prefs",
+                                     help="custom set user preferences (path to a json file)",
+                                     metavar=None,
+                                     default=None,
+                                     cmds=['run', 'test', 'testex', 'testpkgs',
+                                           'testaddons', 'testall'])),
         ]
      ),
 
@@ -928,6 +934,18 @@ def run(arguments=sys.argv[1:], target_cfg=None, pkg_cfg=None,
 
         enable_e10s = options.enable_e10s or target_cfg.get('e10s', False)
 
+        if options.user_prefs:
+            options.user_prefs = os.path.expanduser(options.user_prefs)
+            options.user_prefs = os.path.abspath(options.user_prefs)
+            if (os.path.exists(options.user_prefs) and
+                os.path.isfile(options.user_prefs)):
+                user_prefs = packaging.load_json_file(options.user_prefs)
+            else:
+                print >>sys.stderr, "File does not exist: %s" % options.user_prefs
+                sys.exit(1)
+        else:
+            user_prefs = None
+
         try:
             retval = run_app(harness_root_dir=app_extension_dir,
                              manifest_rdf=manifest_rdf,
@@ -953,7 +971,8 @@ def run(arguments=sys.argv[1:], target_cfg=None, pkg_cfg=None,
                              bundle_sdk=options.bundle_sdk,
                              pkgdir=options.pkgdir,
                              enable_e10s=enable_e10s,
-                             no_connections=no_connections)
+                             no_connections=no_connections,
+                             user_prefs=user_prefs)
         except ValueError, e:
             print ""
             print "A given cfx option has an inappropriate value:"

@@ -398,7 +398,8 @@ def run_app(harness_root_dir, manifest_rdf, harness_options,
             bundle_sdk=True,
             pkgdir="",
             enable_e10s=False,
-            no_connections=False):
+            no_connections=False,
+            user_prefs=None):
     if binary:
         binary = os.path.expanduser(binary)
 
@@ -450,6 +451,9 @@ def run_app(harness_root_dir, manifest_rdf, harness_options,
         raise ValueError("Unknown app: %s" % app_type)
     if sys.platform == 'darwin' and app_type != 'xulrunner':
         cmdargs.append('-foreground')
+
+    if user_prefs:
+        preferences.update(user_prefs)
 
     if args:
         cmdargs.extend(shlex.split(args))
