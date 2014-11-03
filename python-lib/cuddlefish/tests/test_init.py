@@ -235,6 +235,24 @@ class TestCfxQuits(unittest.TestCase):
         self.assertIn("2 of 2 tests passed.", err)
         self.assertIn("Program terminated successfully.", err)
 
+    def test_cfx_run_user_prefs(self):
+        addon_path = os.path.join(tests_path, "bug-777856-files", "user-prefs")
+        user_prefs_path = os.path.join(addon_path, "prefs.json")
+        rc, out, err = self.run_cfx(addon_path, ["run", "--user-prefs", user_prefs_path])
+        self.assertEqual(rc, 0)
+        self.assertIn("test.user_prefs.boolean", err)
+        self.assertIn("test.user_prefs.int", err)
+        self.assertIn("test.user_prefs.string", err)
+        self.assertIn("Program terminated successfully.", err)
+
+    def test_cfx_test_user_prefs(self):
+        addon_path = os.path.join(tests_path, "bug-777856-files", "user-prefs")
+        user_prefs_path = os.path.join(addon_path, "prefs.json")
+        rc, out, err = self.run_cfx(addon_path, ["test", "--user-prefs", user_prefs_path])
+        self.assertEqual(rc, 0)
+        self.assertIn("7 of 7 tests passed.", err)
+        self.assertIn("Program terminated successfully.", err)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -1,0 +1,5 @@
+{
+  "test.user_prefs.boolean":  false,
+  "test.user_prefs.int":      1024,
+  "test.user_prefs.string":   "string"
+}
