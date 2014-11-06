@@ -143,7 +143,7 @@ parser_groups = (
                                     cmds=['run', 'test', 'testex', 'testpkgs',
                                           'testaddons', 'testall'])),
         (("", "--user-prefs",), dict(dest="user_prefs",
-                                     help="custom set user preferences (path to a json file)",
+                                     help="comma-separated custom set user preferences (path to a json file)",
                                      metavar=None,
                                      default=None,
                                      cmds=['run', 'test', 'testex', 'testpkgs',
@@ -934,17 +934,19 @@ def run(arguments=sys.argv[1:], target_cfg=None, pkg_cfg=None,
 
         enable_e10s = options.enable_e10s or target_cfg.get('e10s', False)
 
+        user_prefs = {}
         if options.user_prefs:
-            options.user_prefs = os.path.expanduser(options.user_prefs)
-            options.user_prefs = os.path.abspath(options.user_prefs)
-            if (os.path.exists(options.user_prefs) and
-                os.path.isfile(options.user_prefs)):
-                user_prefs = packaging.load_json_file(options.user_prefs)
-            else:
-                print >>sys.stderr, "File does not exist: %s" % options.user_prefs
-                sys.exit(1)
-        else:
-            user_prefs = None
+            options.user_prefs = options.user_prefs.split(",")
+            for prefs in options.user_prefs:
+                prefs = os.path.expanduser(prefs)
+                prefs = os.path.abspath(prefs)
+                if (os.path.exists(prefs) and
+                    os.path.isfile(prefs)):
+                    prefs = packaging.load_json_file(prefs)
+                    user_prefs.update(prefs)
+                else:
+                    print >>sys.stderr, "File does not exist: %s" % prefs
+                    sys.exit(1)
 
         try:
             retval = run_app(harness_root_dir=app_extension_dir,
