@@ -1,0 +1,6 @@
+{
+  "test.user_prefs1.boolean":    false,
+  "test.user_prefs1.int":        1024,
+  "test.user_prefs1.string":     "string",
+  "test.user_prefs.overwritten": 1
+}

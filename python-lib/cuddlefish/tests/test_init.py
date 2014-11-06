@@ -253,6 +253,17 @@ class TestCfxQuits(unittest.TestCase):
         self.assertIn("7 of 7 tests passed.", err)
         self.assertIn("Program terminated successfully.", err)
 
+    def test_cfx_test_multi_user_prefs(self):
+        addon_path = os.path.join(tests_path, "bug-777856-files", "multi-user-prefs")
+        user_prefs_path = ",".join([os.path.join(addon_path, "prefs1.json"),
+                                    os.path.join(addon_path, "prefs2.json"),
+                                    os.path.join(addon_path, "prefs3.json"),
+                                   ])
+        rc, out, err = self.run_cfx(addon_path, ["test", "--user-prefs", user_prefs_path])
+        self.assertEqual(rc, 0)
+        self.assertIn("20 of 20 tests passed.", err)
+        self.assertIn("Program terminated successfully.", err)
+
 
 if __name__ == "__main__":
     unittest.main()
